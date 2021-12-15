@@ -1,0 +1,50 @@
+<?php
+
+
+namespace App\Service\Elasticsearch\CreateIndex;
+
+use Jtar\Elasticsearch\Index\ElasticsearchIndex;
+
+/**
+ * Class UserIndex
+ * DEMO.
+ */
+class UserIndex extends ElasticsearchIndex
+{
+    protected $NAME = 'user_index';
+
+    protected $mapping = [
+        '_source' => [
+            'enabled' => true
+        ],
+        'properties' => [
+            'id'    =>  [
+                'type'  =>  self::TYPE_INTEGER,
+            ],
+            'created_at' => [
+                'type' => 'date',
+                "format" => self::FORMAT_DATETIME
+//                "format" => "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||yyyy-MM||yyyy/MM/dd||yyyy/MM||strict_date_optional_time||epoch_millis"
+            ],
+            'username'    =>  [
+                'type'  =>  self::TYPE_KEYWORD,
+            ],
+            'age'    =>  [
+                'type'  =>  self::TYPE_INTEGER,
+            ],
+            'nick'    =>  [
+                'type'  =>  self::TYPE_KEYWORD,
+            ],
+            'avatar'    =>  [
+                'type'  =>  self::TYPE_TEXT,
+            ]
+        ]
+    ];
+
+//    public function createIndex()
+//    {
+//        $result  = make(UserIndex::class)->create();
+//
+//        var_dump($result);
+//    }
+}

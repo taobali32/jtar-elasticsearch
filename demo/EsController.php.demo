@@ -1,0 +1,233 @@
+<?php
+
+
+namespace App\Controller;
+
+
+use App\Model\User;
+use App\Service\Elasticsearch\CreateIndex\UserIndex;
+use App\Service\Elasticsearch\Models\ElasticsearchModel;
+use Carbon\Carbon;
+use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\GetMapping;
+
+/**
+ * @Controller()
+ * Class EsController
+ * @package App\Controller
+ */
+class EsController extends AbstractController
+{
+    /**
+     * @GetMapping(path="create_index")
+     */
+    public function createIndex()
+    {
+        $result  = make(UserIndex::class)->create();
+
+        var_dump($result);
+    }
+
+    /**
+     * @GetMapping(path="insert")
+     */
+    public function insert()
+    {
+        $user = User::find(1);
+
+        $data = [
+            '_id'           =>  $user->id,
+            'created_at'    =>  Carbon::parse($user->created_at)->toDateTimeString(),
+            'username'      =>  $user->username,
+            'age'           =>  $user->age,
+            'nick'          =>  $user->nick,
+            'avatar'        =>  $user->avatar
+        ];
+
+        $qBuilder = make(ElasticsearchModel::class);
+        $qBuilder->setIndex('user_index');
+
+        $result  = $qBuilder->query()->insert($data)->isSuccessful();
+
+        var_dump($result);
+
+//        $i->newQuery()
+//        var_dump(UserIndex::class instanceof ElasticsearchIndex);
+//        $builder = new Query(make(UserIndex::class));
+    }
+
+    /**
+     * @GetMapping(path="inserts")
+     */
+    public function inserts()
+    {
+        $user = User::find(1);
+
+        $u2 = User::find(2);
+        $data = [
+            [
+                '_id'           =>  $user->id,
+                'created_at'    =>  Carbon::parse($user->created_at)->toDateTimeString(),
+                'username'      =>  $user->username,
+                'age'           =>  $user->age,
+                'nick'          =>  $user->nick,
+                'avatar'        =>  $user->avatar
+            ],
+            [
+                '_id'           =>  $u2->id,
+                'created_at'    =>  Carbon::parse($u2->created_at)->toDateTimeString(),
+                'username'      =>  $u2->username,
+                'age'           =>  $u2->age,
+                'nick'          =>  $u2->nick,
+                'avatar'        =>  $u2->avatar
+            ]
+        ];
+
+        $qBuilder = new ElasticsearchModel();
+
+        $qBuilder->setIndex('user_index');
+
+        $result  = $qBuilder->query()->batchInsert($data)->isSuccessful();
+
+        var_dump($result);
+
+//        $i->newQuery()
+//        var_dump(UserIndex::class instanceof ElasticsearchIndex);
+//        $builder = new Query(make(UserIndex::class));
+    }
+
+
+    /**
+     * @GetMapping(path="delete_by_id")
+     */
+    public function deleteById()
+    {
+        $qBuilder = new ElasticsearchModel();
+
+        $qBuilder->setIndex('user_index');
+
+        $result  = $qBuilder->query()->deleteById(1)->isSuccessful();
+
+        var_dump($result);
+    }
+
+
+    /**
+     * @GetMapping(path="delete_by_ids")
+     */
+    public function deleteByIds()
+    {
+        $qBuilder = new ElasticsearchModel();
+
+        $qBuilder->setIndex('user_index');
+
+        $result  = $qBuilder->query()->deleteByIds([1,2])->isSuccessful();
+
+        var_dump($result);
+    }
+
+
+    /**
+     * @GetMapping(path="find_by_id")
+     */
+    public function findById()
+    {
+        $qBuilder = new ElasticsearchModel();
+
+        $qBuilder->setIndex('user_index');
+
+        $result  = $qBuilder->query()->findById(2);
+
+        var_dump($result);
+    }
+
+    /**
+     * @GetMapping(path="first")
+     */
+    public function first(){
+        $qBuilder = new ElasticsearchModel();
+
+        $qBuilder->setIndex('user_index');
+
+        $result  = $qBuilder->query()->first([
+            'term'  =>  [
+                'username'   =>  2
+            ]
+        ]);
+
+        var_dump($result);
+    }
+
+    /**
+     * @GetMapping(path="all")
+     */
+    public function all(){
+        $qBuilder = new ElasticsearchModel();
+
+        $qBuilder->setIndex('user_index');
+
+        $result  = $qBuilder->query()->all([],['age' => 'asc'],1,1)->toArray();
+
+        var_dump($result);
+    }
+
+
+    /**
+     * @GetMapping(path="count")
+     */
+    public function count(){
+        $qBuilder = new ElasticsearchModel();
+
+        $qBuilder->setIndex('user_index');
+
+        $result  = $qBuilder->query()->count();
+
+        var_dump($result);
+    }
+
+
+    /**
+     * @GetMapping(path="update_by_query")
+     */
+    public function updateByQuery(){
+        $qBuilder = new ElasticsearchModel();
+
+        $qBuilder->setIndex('user_index');
+
+        $result  = $qBuilder->query()->updateByQuery(['age' => 100],['term'  =>  [
+            'username'   =>  2
+        ]])->isSuccessful();
+
+        var_dump($result);
+    }
+
+
+    /**
+     * @deprecated
+     * @GetMapping(path="batch_update")
+     */
+    public function batchUpdate(){
+        $qBuilder = new ElasticsearchModel();
+
+        $qBuilder->setIndex('user_index');
+
+        $result  = $qBuilder->query()->updateByIds([1,2])->isSuccessful();
+
+        var_dump($result);
+    }
+
+    /**
+     * @GetMapping(path="update_by_id")
+     */
+    public function updateById()
+    {
+        $qBuilder = new ElasticsearchModel();
+
+        $qBuilder->setIndex('user_index');
+
+        $result  = $qBuilder->query()->updateById(['age' => 1000],1)->isSuccessful();
+
+        var_dump($result);
+    }
+
+}
