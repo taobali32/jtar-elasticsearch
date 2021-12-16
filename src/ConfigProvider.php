@@ -29,7 +29,7 @@ class ConfigProvider
             ],
             'publish' => [
                 [
-                    'id' => 'logins',
+                    'id' => 'es_cache',
                     'description' => '登陆配置.', // 描述
                     // 建议默认配置放在 publish 文件夹中，文件命名和组件名称相同
                     'source' => __DIR__ . '/../publish/es_cache.php',  // 对应的配置文件路径
