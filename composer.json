@@ -18,9 +18,8 @@
         }
     },
     "require": {
-        "php": ">=7.2",
-        "hyperf/di": "2.0.*",
-        "hyperf/elasticsearch": "2.0.*",
+        "php": ">=7.3",
+        "hyperf/elasticsearch": "2.2.*",
       "ext-json": "*"
     },
     "require-dev": {
