@@ -19,7 +19,7 @@
     },
     "require": {
         "php": ">=7.3",
-        "hyperf/elasticsearch": "2.2.*",
+        "hyperf/elasticsearch": "^2.2",
       "ext-json": "*"
     },
     "require-dev": {
