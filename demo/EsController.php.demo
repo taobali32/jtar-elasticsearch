@@ -33,6 +33,7 @@ class EsController extends AbstractController
      * 距离查询
      * @GetMapping(path="find")
      */
+
     public function find(){
         $qBuilder = new ElasticsearchModel();
 
@@ -44,23 +45,30 @@ class EsController extends AbstractController
         $result  = $qBuilder->query()->find(
             [
                 'bool'    =>    [
-                    'must'  =>   [
-                        'term'  =>  [
-                            'hobby' =>  'lol'
-                        ],
-                    ],
                     'filter'    =>  [
-                        'geo_distance' => [
-                            'distance' => '1km',  //附近1km范围内
-                            'location' => [
-                                'lat' => $lat,
-                                'lon' => $lng
+                        [
+                            'term'  =>  [
+                                'hobby' =>  '吃饭',
                             ],
                         ],
+                        [
+                            'term'  =>  [
+                                'status' =>  1,
+                            ],
+                        ],[
+                            'geo_distance' => [
+                                'distance' => '5km',  //附近1km范围内
+                                'location' => [
+                                    'lat' => $lat,
+                                    'lon' => $lng
+                                ],
+                            ],
+                        ]
                     ]
+
                 ]
             ],
-            [],
+            ['_id','status'],
             [
                 '_geo_distance' => [   //按照距离由近到远排序
                     "unit" => "km",
@@ -76,7 +84,7 @@ class EsController extends AbstractController
         );
 
         // sort就是距离
-        var_dump($result->getContent());
+        var_dump($result->toArray());
     }
 
 
