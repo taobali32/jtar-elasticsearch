@@ -28,6 +28,58 @@ class EsController extends AbstractController
         var_dump($result);
     }
 
+
+    /**
+     * 距离查询
+     * @GetMapping(path="find")
+     */
+    public function find(){
+        $qBuilder = new ElasticsearchModel();
+
+        $qBuilder->setIndex('user_index');
+
+        $lat = '34.72468';
+        $lng =  '113.6401';
+
+        $result  = $qBuilder->query()->find(
+            [
+                'bool'    =>    [
+                    'must'  =>   [
+                        'term'  =>  [
+                            'hobby' =>  'lol'
+                        ],
+                    ],
+                    'filter'    =>  [
+                        'geo_distance' => [
+                            'distance' => '1km',  //附近1km范围内
+                            'location' => [
+                                'lat' => $lat,
+                                'lon' => $lng
+                            ],
+                        ],
+                    ]
+                ]
+            ],
+            [],
+            [
+                '_geo_distance' => [   //按照距离由近到远排序
+                    "unit" => "km",
+                    "order" => "desc",
+                    "location" => [
+                        'lat' => $lat,
+                        'lon' => $lng
+                    ],
+                    "mode" => "min",
+                ]
+            ],null,null,
+
+        );
+
+        // sort就是距离
+        var_dump($result->getContent());
+    }
+
+
     /**
      * @GetMapping(path="insert")
      */
@@ -95,6 +147,30 @@ class EsController extends AbstractController
 //        var_dump(UserIndex::class instanceof ElasticsearchIndex);
 //        $builder = new Query(make(UserIndex::class));
     }
+
+        /**
+         * 数组查询
+         * @GetMapping(path="find")
+         */
+        public function find(){
+            $qBuilder = new ElasticsearchModel();
+
+            $qBuilder->setIndex('user_index');
+
+            $result  = $qBuilder->query()->find(
+                [
+                    'bool'    =>    [
+                        'filter'    =>  [
+                            'term'  =>  [
+                                'hobby' =>  '英雄杀'
+                            ]
+                        ]
+                    ]
+                ]
+            )->toArray();
+
+            var_dump($result);
+        }
 
 
     /**
