@@ -12,6 +12,7 @@ use Jtar\Elasticsearch\Models\Responses\ListResponse;
 use Jtar\Elasticsearch\Models\Responses\UpdatedResponse;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
+use Hyperf\Utils\Context;
 
 class Query
 {
@@ -316,6 +317,10 @@ class Query
         }
 
         $params['body'] = array_merge($params['body'], $opts);
+
+        if (Context::get('preference')){
+            $params['preference'] = Context::get('preference');
+        }
 
         return new ListResponse($this->getClient()->search($params));
     }
