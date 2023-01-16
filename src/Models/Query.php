@@ -263,9 +263,9 @@ class Query
         return new ListResponse($this->getClient()->scroll($params));
     }
 
-    public function clearScrollId($scroll_id = []): void
+    public function clearScrollId($scroll_id ): void
     {
-        $this->getClient()->clearScroll($scroll_id);
+        $this->getClient()->clearScroll(['scroll_id' => $scroll_id]);
     }
 
     /**
