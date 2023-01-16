@@ -258,6 +258,15 @@ class Query
         return $this->model->getClient();
     }
 
+    public function nextScrollQuery($params = []): ListResponse
+    {
+        return new ListResponse($this->getClient()->scroll($params));
+    }
+
+    public function clearScrollId($scroll_id = []): void
+    {
+        $this->getClient()->clearScroll($scroll_id);
+    }
 
     /**
      * 查找数据.
@@ -278,7 +287,8 @@ class Query
         $from = null,
         $size = null,
         $opts = [],
-        $index = null
+        $index = null,
+        $wrap = []
     ) {
         $params = $this->prepareParams(
             [
@@ -286,6 +296,8 @@ class Query
                 'body'  => [],
             ]
         );
+
+        if ($wrap) $params = array_merge($wrap,$params);
 
         if (! $condition) {
             $condition = [
@@ -316,10 +328,6 @@ class Query
         }
 
         $params['body'] = array_merge($params['body'], $opts);
-
-        if (\Hyperf\Context\Context::get('preference')){
-            $params['preference'] = \Hyperf\Context\Context::get('preference');
-        }
 
         return new ListResponse($this->getClient()->search($params));
     }

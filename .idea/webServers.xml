@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="659acbd3-1fbf-4273-ad73-cdee53848f4f" name="asasas">
+        <fileTransfer rootFolder="/home/ubuntu/wwwroot/lnmp-master/www/wo/bao/elasticsearch" accessType="SFTP" host="124.223.213.55" port="22" sshConfigId="b7890d81-05ad-4bf8-b941-485745528e27" sshConfig="ubuntu@124.223.213.55:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
